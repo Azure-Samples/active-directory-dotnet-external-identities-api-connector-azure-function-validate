@@ -44,8 +44,8 @@ Before you get started, make sure you have the following requirements in place:
 
 - An Azure account with an active subscription. [Create an account for free](https://azure.microsoft.com/free/?ref=microsoft.com&utm_source=microsoft.com&utm_medium=docs&utm_campaign=visualstudio).
 - A [self-service sign-up user flow](https://docs.microsoft.com/azure/active-directory/b2b/self-service-sign-up-user-flow) in an Azure AD tenant. Only use Azure AD
-- [.NET Core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1). The ASP.NET Core Runtime enables you to run existing web/server applications. 
-- [Visual Studio code](https://code.visualstudio.com). A free source-code editor made by Microsoft for Windows, Linux and macOS. Features include support for debugging, syntax highlighting, intelligent code completion, snippets, code refactoring, and embedded Git.
+- Install [.NET Core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1). The ASP.NET Core Runtime enables you to run existing web/server applications. 
+- Install [Visual Studio code](https://code.visualstudio.com). A free source-code editor made by Microsoft for Windows, Linux and macOS. Features include support for debugging, syntax highlighting, intelligent code completion, snippets, code refactoring, and embedded Git.
 - The [Azure Functions extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions) for Visual Studio Code.
 
 ## Setting up your Azure Function
