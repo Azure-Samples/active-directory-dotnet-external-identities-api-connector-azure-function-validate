@@ -1,12 +1,12 @@
 ---
 page_type: sample
 languages:
-  - javascript
-  - nodejs
+  - C#
+  - .Net core
 products:
   - azure-active-directory
-description: "A sample to demonstrate how to validating a sign-up using a Node.js Azure Function and API connectors"
-urlFragment: "active-directory-nodejs-external-identities-api-connector-azure-function-validateb"
+description: "A sample to demonstrate how to validating a sign-up using a C# Azure Function and API connectors"
+urlFragment: "active-directory-dotnet-external-identities-api-connector-azure-function-validateb"
 ---
 
 # External Identities self-service sign-up validation using Node.js Azure Function and API connector.
@@ -34,7 +34,7 @@ For the API, an Azure Function HTTP trigger using C# .Net core is implemented (w
 
 ## Key concepts
 
-External Identities [self-service sign-up](https://docs.microsoft.com/en-us/azure/active-directory/b2b/self-service-sign-up-overview) enables you way to create custom experiences for external users like collaborators, partners, and guests to sign-up to to applications in your tenant for easy collaboration.
+External Identities [self-service sign-up](https://docs.microsoft.com/azure/active-directory/b2b/self-service-sign-up-overview) enables you way to create custom experiences for external users like collaborators, partners, and guests to sign-up to to applications in your tenant for easy collaboration.
 
 [API connectors](https://docs.microsoft.com/azure/active-directory/b2b/api-connectors-overview) provide you with a way to further modify and extend sign-up flows by leveraging web APIs. This examples uses an API connector to limit sign-ups to only a specific tenant: fabrikam.com. This is easily modifiable in `index.js`. Further, the API connector is used to perform input validation on 'Job Title' by ensuring a user provides a value of at least 4 characters.
 
