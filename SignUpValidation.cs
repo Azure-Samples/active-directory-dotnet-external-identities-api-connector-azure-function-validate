@@ -51,10 +51,10 @@ namespace Sample.ExternalIdentities
                 return (ActionResult)new BadRequestObjectResult(new ResponseContent("ValidationError", "SingUp-Validation-03", "Email name is mandatory."));
             }
 
-            // get domain of email address
+            // Get domain of email address
             string domain = data.email.ToString().Split("@")[1];
 
-            // If email claim not found, show validation error message. So, user can fix the input data
+            // Check the domain in the allowed list
             if ( !allowedDomain.Contains(domain.ToLower()) )
             {
                 return (ActionResult)new BadRequestObjectResult(new ResponseContent("ValidationError", "SingUp-Validation-04", $"You must have an account from '{string.Join(", " ,allowedDomain)}' to register as an external user for Contoso."));
