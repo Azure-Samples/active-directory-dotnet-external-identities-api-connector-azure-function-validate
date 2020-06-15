@@ -61,9 +61,10 @@ namespace Sample.ExternalIdentities
             }
 
             // If jobTitle claim doesn't exist, or it is too short, show validation error message. So, user can fix the input data.
-            if (data.jobTitle != null &&  data.jobTitle.ToString().Length < 4)
-            {
-                return (ActionResult)new BadRequestObjectResult(new ResponseContent("ValidationError", "SingUp-Validation-05", "Please provide a job title of length greater than 4."));
+            if (data.jobTitle != null){ //use == if jobTitle should be required
+                if (data.jobTitle.ToString().Length < 4){
+                    return (ActionResult)new BadRequestObjectResult(new ResponseContent("ValidationError", "SingUp-Validation-05", "Please provide a job title of length greater than 4."));
+                }   
             }
 
             // Input validation passed successfully, return `Allow` response.
@@ -83,28 +84,27 @@ namespace Sample.ExternalIdentities
                 return true;
             }
 
-            // Check if the HTTP header exist
+            // Check if the HTTP Authorization header exist
             if (!req.Headers.ContainsKey("Authorization"))
             {
                 log.LogWarning("Missing HTTP basic authentication header.");
                 return false;  
             }
 
-            // Get the HTTP credentials
+            // Read the authorization header
             var auth = req.Headers["Authorization"].ToString();
 
-            // Wrong HTTP Authorization header
-            if (auth.Length < 7 || !auth.Contains(":"))
+            // Ensure the type of the authorization header id `Basic`
+            if (!auth.StartsWith("Basic "))
             {
-                log.LogWarning("Missing HTTP basic authentication header.");
+                log.LogWarning("HTTP basic authentication header must start with 'Basic '.");
                 return false;  
             }
 
+            // Get the the HTTP basinc authorization credentials
             var cred = System.Text.UTF8Encoding.UTF8.GetString(Convert.FromBase64String(auth.Substring(6))).Split(':');
 
-            log.LogInformation(cred.Length.ToString());
-
-
+            // Evaluate the credentials and return the result
             return (cred[0] == username && cred[1] == password) ;
         }
     }
