@@ -24,7 +24,7 @@ namespace Sample.ExternalIdentities
             // Check HTTP basic authorization
             if (!Authorize(req, log))
             {
-                log.LogWarning("HTTP basic authentication validatio failed.");
+                log.LogWarning("HTTP basic authentication validation failed.");
                 return (ActionResult)new UnauthorizedResult();
             }
 
@@ -61,7 +61,7 @@ namespace Sample.ExternalIdentities
             }
 
             // If jobTitle claim doesn't exist, or it is too short, show validation error message. So, user can fix the input data.
-            if (data.jobTitle == null || data.jobTitle.ToString() == "" || data.jobTitle.ToString().Length < 4)
+            if (data.jobTitle != null &&  data.jobTitle.ToString().Length < 4)
             {
                 return (ActionResult)new BadRequestObjectResult(new ResponseContent("ValidationError", "SingUp-Validation-05", "Please provide a job title of length greater than 4."));
             }
@@ -72,7 +72,7 @@ namespace Sample.ExternalIdentities
 
         private static bool Authorize(HttpRequest req, ILogger log)
         {   
-            // Get the environmant's credentials 
+            // Get the environment's credentials 
             string username = System.Environment.GetEnvironmentVariable("BASIC_AUTH_USERNAME", EnvironmentVariableTarget.Process);
             string password = System.Environment.GetEnvironmentVariable("BASIC_AUTH_PASSWORD", EnvironmentVariableTarget.Process);
 
