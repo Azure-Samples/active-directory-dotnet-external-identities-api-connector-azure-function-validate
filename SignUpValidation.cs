@@ -21,6 +21,13 @@ namespace Sample.ExternalIdentities
             // Allowed domains
             string[] allowedDomain = {"fabrikam.com" ,"contoso.com"};
 
+            // Check HTTP basic authorization
+            if (!Authorize(req, log))
+            {
+                log.LogWarning("HTTP basic authentication validatio failed.");
+                return (ActionResult)new UnauthorizedResult();
+            }
+
             // Get the request body
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
@@ -61,6 +68,44 @@ namespace Sample.ExternalIdentities
 
             // Input validation passed successfully, return `Allow` response.
             return (ActionResult)new OkObjectResult(new ResponseContent());
+        }
+
+        private static bool Authorize(HttpRequest req, ILogger log)
+        {   
+            // Get the environmant's credentials 
+            string username = System.Environment.GetEnvironmentVariable("BASIC_AUTH_USERNAME", EnvironmentVariableTarget.Process);
+            string password = System.Environment.GetEnvironmentVariable("BASIC_AUTH_PASSWORD", EnvironmentVariableTarget.Process);
+
+            // Returns authorized if the username is empty or not exists.
+            if (string.IsNullOrEmpty(username))
+            {
+                log.LogInformation("HTTP basic authentication is not set.");
+                return true;
+            }
+
+            // Check if the HTTP header exist
+            if (!req.Headers.ContainsKey("Authorization"))
+            {
+                log.LogWarning("Missing HTTP basic authentication header.");
+                return false;  
+            }
+
+            // Get the HTTP credentials
+            var auth = req.Headers["Authorization"].ToString();
+
+            // Wrong HTTP Authorization header
+            if (auth.Length < 7 || !auth.Contains(":"))
+            {
+                log.LogWarning("Missing HTTP basic authentication header.");
+                return false;  
+            }
+
+            var cred = System.Text.UTF8Encoding.UTF8.GetString(Convert.FromBase64String(auth.Substring(6))).Split(':');
+
+            log.LogInformation(cred.Length.ToString());
+
+
+            return (cred[0] == username && cred[1] == password) ;
         }
     }
 }

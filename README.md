@@ -68,15 +68,16 @@ git clone https://github.com/Azure-Samples/active-directory-dotnet-external-iden
 
 Authentication is stored in environment variables, so they're not stored as part of the repository and should never be stored in checked in code. Read more about the [local.settings.json](https://docs.microsoft.com/azure/azure-functions/functions-run-local?tabs=macos%2Ccsharp%2Cbash#local-settings-file) file.
 
-1. Create a **local.settings.json** file
-1. Copy and paste the below code onto the file:
+1. Open the [local.settings.json](local.settings.json) file
+1. Add the `BASIC_AUTH_USERNAME` and the `BASIC_AUTH_PASSWORD` setting.
+1. You final local.settings.json should look like following one:
 
 ```json
 {
   "IsEncrypted": false,
   "Values": {
     "AzureWebJobsStorage": "",
-    "FUNCTIONS_WORKER_RUNTIME": "node",
+    "FUNCTIONS_WORKER_RUNTIME": "dotnet",
     "BASIC_AUTH_USERNAME": "<USERNAME>",
     "BASIC_AUTH_PASSWORD": "<PASSWORD>"
   }
