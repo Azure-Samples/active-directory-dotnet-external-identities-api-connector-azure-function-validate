@@ -19,7 +19,7 @@ namespace Sample.ExternalIdentities
             ILogger log)
         {
             // Allowed domains
-            string[] allowedDomain = {"fabrikam.com" ,"contoso.com"};
+            string[] allowedDomain = {"fabrikam.com" ,"fabricam.com"};
 
             // Check HTTP basic authorization
             if (!Authorize(req, log))
@@ -35,7 +35,7 @@ namespace Sample.ExternalIdentities
             // If input data is null, show block page
             if (data == null)
             {
-                return (ActionResult)new OkObjectResult(new ResponseContent("ShowBlockPage", "SingUp-Validation-01", "Invalid input data."));
+                return (ActionResult)new OkObjectResult(new ResponseContent("ShowBlockPage", "SingUp-Validation-01", "There was a problem with your request."));
             }
 
             // Print out the request body
@@ -45,10 +45,10 @@ namespace Sample.ExternalIdentities
             string language = (data.ui_locales == null || data.ui_locales.ToString() == "") ? "default" : data.ui_locales.ToString();
             log.LogInformation($"Current language: {language}");
 
-            // If email claim not found, show validation error message. So, user can fix the input data
+            // If email claim not found, show block page. Email is required and sent by default.
             if (data.email == null || data.email.ToString() == "" || data.email.ToString().Contains("@") == false)
             {
-                return (ActionResult)new BadRequestObjectResult(new ResponseContent("ValidationError", "SingUp-Validation-03", "Email name is mandatory."));
+                return (ActionResult)new BadRequestObjectResult(new ResponseContent("ShowBlockPage", "SingUp-Validation-02", "Email name is mandatory."));
             }
 
             // Get domain of email address
@@ -57,13 +57,13 @@ namespace Sample.ExternalIdentities
             // Check the domain in the allowed list
             if ( !allowedDomain.Contains(domain.ToLower()) )
             {
-                return (ActionResult)new BadRequestObjectResult(new ResponseContent("ValidationError", "SingUp-Validation-04", $"You must have an account from '{string.Join(", " ,allowedDomain)}' to register as an external user for Contoso."));
+                return (ActionResult)new BadRequestObjectResult(new ResponseContent("ShowBlockPage", "SingUp-Validation-03", $"You must have an account from '{string.Join(", " ,allowedDomain)}' to register as an external user for Contoso."));
             }
 
             // If jobTitle claim doesn't exist, or it is too short, show validation error message. So, user can fix the input data.
             if (data.jobTitle != null){ //use == if jobTitle should be required
-                if (data.jobTitle.ToString().Length < 4){
-                    return (ActionResult)new BadRequestObjectResult(new ResponseContent("ValidationError", "SingUp-Validation-05", "Please provide a job title of length greater than 4."));
+                if (data.jobTitle.ToString().Length < 5){
+                    return (ActionResult)new BadRequestObjectResult(new ResponseContent("ValidationError", "SingUp-Validation-04", "Please provide a Job Title with at least five characters .", "400"));
                 }   
             }
 

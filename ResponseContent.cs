@@ -2,21 +2,26 @@ namespace Sample.ExternalIdentities
 {
      public class ResponseContent
     {
+        public const string ApiVersion = "0.0.1";
+
         public ResponseContent()
         {
-            version = "1.0.1";
-            this.action = "Allow";
+            this.version = ResponseContent.ApiVersion;
+            this.action = "Continue";
         }
 
-        public ResponseContent(string action, string code, string userMessage)
+        public ResponseContent(string action, string code, string userMessage, string status='')
         {
-            version = "1.0.1";
+            this.version = ResponseContent.ApiVersion;
             this.action = action;
             this.code = code;
             this.userMessage = userMessage;
+            if(status=='400'){
+                this.status = '400'
+            }
         }
 
-        public string version { get; set; }
+        public string version { get; }
         public string action { get; set; }
         public string code { get; set; }
         public string userMessage { get; set; }
