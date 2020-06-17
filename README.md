@@ -6,16 +6,16 @@ languages:
 products:
   - azure-active-directory
 description: "A sample to demonstrate how to validating a sign-up using a C# Azure Function and API connectors"
-urlFragment: "active-directory-dotnet-external-identities-api-connector-azure-function-validateb"
+urlFragment: "active-directory-dotnet-external-identities-api-connector-azure-function-validate"
 ---
 
-# External Identities self-service sign-up validation using Node.js Azure Function and API connector.
+# External Identities self-service sign-up validation using C# .NET Core Azure Function and API connector.
 
 This sample demonstrates how to use API connectors to customize [self-service sign-up](https://docs.microsoft.com/azure/active-directory/b2b/self-service-sign-up-overview) of External Identities.
 
 In particular, the sample demonstrates how to:
 
-1. Limit external user sign-ups to only a particular federated Azure Active Directory tenant. In this example, it's a fictitious `fabrikam.com` and `contoso.com`.
+1. Limit external user sign-ups to only a particular federated Azure Active Directory tenant. In this example, it's a fictitious `fabrikam.com` and `fabricam.com`.
 1. Validate a user-provided value ('Job Title') against a validation rule.
 
 For the API, an Azure Function HTTP trigger using C# .Net core is implemented (with Basic authentication TBD!!!!!).
@@ -88,7 +88,7 @@ Specify a **Username** and **Password**. This will be what your Azure Function u
 
 ### Deploy the application
 
-1. Follow steps of [this](https://docs.microsoft.com/azure/javascript/tutorial-vscode-serverless-node-04) guide #1-7 to deploy your Azure Function to the cloud and get a live API endpoint URL.
+1. Follow steps of [this](https://docs.microsoft.com/en-us/azure/azure-functions/functions-develop-vs-code?tabs=csharp#publish-to-azure) guide to deploy your Azure Function to the cloud and get a live API endpoint URL.
 1. Once deployed, you'll see a **'Upload settings'** option. Select this. It will upload your environment variables onto the [Application settings](https://docs.microsoft.com/azure/azure-functions/functions-develop-vs-code?tabs=csharp#application-settings-in-azure) of the cloud.
 
 To learn more about Visual Studio Code development for Azure Functions, see [this](https://docs.microsoft.com/azure/azure-functions/functions-develop-vs-code?tabs=csharp#republish-project-files).
