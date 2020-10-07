@@ -10,11 +10,10 @@ namespace Sample.ExternalIdentities
             this.action = "Continue";
         }
 
-        public ResponseContent(string action, string code, string userMessage, string status='')
+        public ResponseContent(string action, string userMessage, string status='')
         {
             this.version = ResponseContent.ApiVersion;
             this.action = action;
-            this.code = code;
             this.userMessage = userMessage;
             if(status=='400'){
                 this.status = '400'
@@ -23,7 +22,6 @@ namespace Sample.ExternalIdentities
 
         public string version { get; }
         public string action { get; set; }
-        public string code { get; set; }
         public string userMessage { get; set; }
     }
 }

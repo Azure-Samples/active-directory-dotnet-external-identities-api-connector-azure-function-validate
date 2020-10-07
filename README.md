@@ -9,16 +9,15 @@ description: "A sample to demonstrate how to validating a sign-up using a C# Azu
 urlFragment: "active-directory-dotnet-external-identities-api-connector-azure-function-validate"
 ---
 
-# External Identities self-service sign-up validation using C# .NET Core Azure Function and API connector.
+# User flow sign-up customization using C# .NET Core Azure Function and API connectors
 
-This sample demonstrates how to use API connectors to customize [self-service sign-up](https://docs.microsoft.com/azure/active-directory/b2b/self-service-sign-up-overview) of External Identities.
-
+This sample demonstrates how to use API connectors to customize sign-up for Azure AD [guest user self-service sign-up](https://docs.microsoft.com/azure/active-directory/b2b/self-service-sign-up-overview) and [Azure AD B2C sign-up user flows](https://docs.microsoft.com/azure/active-directory-b2c/tutorial-create-user-flows).
 In particular, the sample demonstrates how to:
 
 1. Limit external user sign-ups to only a particular federated Azure Active Directory tenant. In this example, it's a fictitious `fabrikam.com` and `fabricam.com`.
 1. Validate a user-provided value ('Job Title') against a validation rule.
 
-For the API, an Azure Function HTTP trigger using C# .Net core is implemented (with Basic authentication TBD!!!!!).
+The API is implemented using an Azure Function HTTP trigger in C# .NET Core.
 
 ## Contents
 
@@ -34,17 +33,19 @@ For the API, an Azure Function HTTP trigger using C# .Net core is implemented (w
 
 ## Key concepts
 
-External Identities [self-service sign-up](https://docs.microsoft.com/azure/active-directory/b2b/self-service-sign-up-overview) enables you way to create custom experiences for external users like collaborators, partners, and guests to sign-up to to applications in your tenant for easy collaboration.
+API connectors provide you with a way to modify and extend sign-up flows by leveraging web APIs. API connectors are available in both [guest user self-service sign up](https://docs.microsoft.com/azure/active-directory/external-identities/api-connectors-overview) and [Azure AD B2C sign-up user flows](https://docs.microsoft.com/azure/active-directory-b2c/add-api-connector).
 
-[API connectors](https://docs.microsoft.com/azure/active-directory/b2b/api-connectors-overview) provide you with a way to further modify and extend sign-up flows by leveraging web APIs. This examples uses an API connector to limit sign-ups to only a specific tenant: fabrikam.com. This is easily modifiable in `index.js`. Further, the API connector is used to perform input validation on 'Job Title' by ensuring a user provides a value of at least 4 characters.
+This examples uses an API connector to limit sign-ups to only specific email domains, fabrikam.com and fabricam.com. This is easily modifiable in `SignUpValidation.cs` and can be extended limit sign ups to any particular email domain or set of email domains. Further, the API connector in this sample is used to perform input validation on 'Job Title' by ensuring a user provides a value of at least 4 characters.
+
+This sample uses an Azure Function as the web API endpoint but you can alternatively edit the `.cs` files in your preferred IDE and deploy that code in any web service. If so, environment variables used for authentication may work differently.
 
 ## Prerequisites
 
 Before you get started, make sure you have the following requirements in place:
 
 - An Azure account with an active subscription. [Create an account for free](https://azure.microsoft.com/free/?ref=microsoft.com&utm_source=microsoft.com&utm_medium=docs&utm_campaign=visualstudio).
-- A [self-service sign-up user flow](https://docs.microsoft.com/azure/active-directory/b2b/self-service-sign-up-user-flow) in an Azure AD tenant. Only use Azure AD
-- Install [.NET Core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1). The ASP.NET Core Runtime enables you to run existing web/server applications. 
+- A [self-service sign-up user flow](https://docs.microsoft.com/azure/active-directory/b2b/self-service-sign-up-user-flow) in an Azure AD tenant or a [sign-up or sign-in user flow](https://docs.microsoft.com/azure/active-directory-b2c/tutorial-create-user-flows) in an Azure AD B2C tenant.
+- Install [.NET Core 3.1](https://dotnet.microsoft.com/download/dotnet-core/3.1). The ASP.NET Core Runtime enables you to run existing web/server applications.
 - Install [Visual Studio code](https://code.visualstudio.com). A free source-code editor made by Microsoft for Windows, Linux and macOS. Features include support for debugging, syntax highlighting, intelligent code completion, snippets, code refactoring, and embedded Git.
 - The [Azure Functions extension](https://marketplace.visualstudio.com/items?itemName=ms-azuretools.vscode-azurefunctions) for Visual Studio Code.
 
@@ -68,7 +69,7 @@ git clone https://github.com/Azure-Samples/active-directory-dotnet-external-iden
 
 Authentication is stored in environment variables, so they're not stored as part of the repository and should never be stored in checked in code. Read more about the [local.settings.json](https://docs.microsoft.com/azure/azure-functions/functions-run-local?tabs=macos%2Ccsharp%2Cbash#local-settings-file) file.
 
-1. Open the [local.settings.json](local.settings.json) file
+1. Create a [local.settings.json](local.settings.json) file
 1. Add the `BASIC_AUTH_USERNAME` and the `BASIC_AUTH_PASSWORD` setting.
 1. You final local.settings.json should look like following one:
 
@@ -84,41 +85,40 @@ Authentication is stored in environment variables, so they're not stored as part
 }
 ```
 
-Specify a **Username** and **Password**. This will be what your Azure Function uses to authenticate incoming requests from Azure AD.
+Specify a **Username** and **Password**. This will be what your Azure Function uses to authenticate incoming requests.
 
 ### Deploy the application
 
-1. Follow steps of [this](https://docs.microsoft.com/en-us/azure/azure-functions/functions-develop-vs-code?tabs=csharp#publish-to-azure) guide to deploy your Azure Function to the cloud and get a live API endpoint URL.
+1. Follow steps of [this](https://docs.microsoft.com/azure/azure-functions/functions-develop-vs-code?tabs=csharp#publish-to-azure) guide to deploy your Azure Function to the cloud. Copy the endpoint web URL of your Azure Function.
 1. Once deployed, you'll see a **'Upload settings'** option. Select this. It will upload your environment variables onto the [Application settings](https://docs.microsoft.com/azure/azure-functions/functions-develop-vs-code?tabs=csharp#application-settings-in-azure) of the cloud.
 
-To learn more about Visual Studio Code development for Azure Functions, see [this](https://docs.microsoft.com/azure/azure-functions/functions-develop-vs-code?tabs=csharp#republish-project-files).
+To learn more about Visual Studio Code development for Azure Functions, see [this](https://docs.microsoft.com/azure/azure-functions/functions-dotnet-class-library).
 
 ## Configure and enable the API connector
 
-Follow the steps outlined in [Add an API connector to a user flow](https://aka.ms/ExtIdAddAPIConnector) to configure and enable the API connector.
+Follow the steps outlined in "Add an API connector" for [guest user self-service sign-up](https://docs.microsoft.com/azure/active-directory/external-identities/self-service-sign-up-add-api-connector) or for [Azure AD B2C](https://docs.microsoft.com/azure/active-directory-b2c/add-api-connector) to create an API connector and enable it your user flow. The end result is shown below.
 
 ### API connector configuration
 
 Your API connector configuration should look like the following:
 
-<img src="media/api-connector-configuration.png" alt="API connector configuration"
+<img src="images/api-connector-configuration.png" alt="API connector configuration"
     title="API connector configuration" width="400" />
 
 - **Endpoint URL** is the Function URL you copied earlier.
 - **Username** and **Password** are the Username and Passwords you defined as environment variables earlier.
-- Select **Job Title** as a claim to send in addition to the two preselected claims.
 
 ### Enable the API connector
 
 In the **API connector** settings for your user flow, you can select the API connector to be invoked at either step:
-![API connector selected](media/api-connector-selected.png)
+![API connector selected](images/api-connector-selected.png)
 
-- **After signing in with an identity provider** - if enabled for this step, the API connector will only allow users with an email ending in `@fabrikam.com`.
+- **After signing in with an identity provider** - if enabled for this step, the API connector will only allow users with an email ending in `@fabrikam.com`. Note that for Azure AD B2C, this does not apply to local accounts.
 - **Before creating the user** - if enabled for this step, the API connector will only allow users with an email ending in `@fabrikam.com` _and_ check whether 'Job Title' is of at least length 4. Note that **Job Title** has to be selected in **User attributes** for the user flow.
 
 ## Customizing the Azure Function
 
-This sample provides a quick way to get started using API connectors. By modifying the source code and leveraging all the capabilities of a web API you're used to, you'll be able to accomplish many more complex scenarios.
+This sample provides a quick way to get started using API connectors. By modifying the source code and leveraging all the capabilities of a web API you're used to, you'll be able to accomplish many more complex scenarios including integration with other web APIs and services.
 
 ## Contributing
 
