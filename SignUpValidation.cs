@@ -19,7 +19,7 @@ namespace Sample.ExternalIdentities
             ILogger log)
         {
             // Allowed domains
-            string[] allowedDomain = {"fabrikam.com" ,"fabricam.com"};
+            string[] allowedDomain = { "fabrikam.com", "fabricam.com" };
 
             // Check HTTP basic authorization
             if (!Authorize(req, log))
@@ -55,16 +55,18 @@ namespace Sample.ExternalIdentities
             string domain = data.email.ToString().Split("@")[1];
 
             // Check the domain in the allowed list
-            if ( !allowedDomain.Contains(domain.ToLower()) )
+            if (!allowedDomain.Contains(domain.ToLower()))
             {
-                return (ActionResult)new BadRequestObjectResult(new ResponseContent("ShowBlockPage", $"You must have an account from '{string.Join(", " ,allowedDomain)}' to register as an external user for Contoso."));
+                return (ActionResult)new BadRequestObjectResult(new ResponseContent("ShowBlockPage", $"You must have an account from '{string.Join(", ", allowedDomain)}' to register as an external user for Contoso."));
             }
 
             // If jobTitle claim doesn't exist, or it is too short, show validation error message. So, user can fix the input data.
-            if (data.jobTitle != null){ //use == if jobTitle should be required
-                if (data.jobTitle.ToString().Length < 5){
-                    return (ActionResult)new BadRequestObjectResult(new ResponseContent("ValidationError", "Please provide a Job Title with at least five characters .", "400"));
-                }   
+            if (data.jobTitle != null)
+            { //use == if jobTitle should be required
+                if (data.jobTitle.ToString().Length < 5)
+                {
+                    return (ActionResult)new BadRequestObjectResult(new ResponseContent("ValidationError", "Please provide a Job Title with at least five characters ."));
+                }
             }
 
             // Input validation passed successfully, return `Allow` response.
@@ -72,7 +74,7 @@ namespace Sample.ExternalIdentities
         }
 
         private static bool Authorize(HttpRequest req, ILogger log)
-        {   
+        {
             // Get the environment's credentials 
             string username = System.Environment.GetEnvironmentVariable("BASIC_AUTH_USERNAME", EnvironmentVariableTarget.Process);
             string password = System.Environment.GetEnvironmentVariable("BASIC_AUTH_PASSWORD", EnvironmentVariableTarget.Process);
@@ -88,7 +90,7 @@ namespace Sample.ExternalIdentities
             if (!req.Headers.ContainsKey("Authorization"))
             {
                 log.LogWarning("Missing HTTP basic authentication header.");
-                return false;  
+                return false;
             }
 
             // Read the authorization header
@@ -98,14 +100,14 @@ namespace Sample.ExternalIdentities
             if (!auth.StartsWith("Basic "))
             {
                 log.LogWarning("HTTP basic authentication header must start with 'Basic '.");
-                return false;  
+                return false;
             }
 
             // Get the the HTTP basinc authorization credentials
             var cred = System.Text.UTF8Encoding.UTF8.GetString(Convert.FromBase64String(auth.Substring(6))).Split(':');
 
             // Evaluate the credentials and return the result
-            return (cred[0] == username && cred[1] == password) ;
+            return (cred[0] == username && cred[1] == password);
         }
     }
 }

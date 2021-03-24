@@ -1,6 +1,6 @@
 namespace Sample.ExternalIdentities
 {
-     public class ResponseContent
+    public class ResponseContent
     {
         public const string ApiVersion = "0.0.1";
 
@@ -10,12 +10,13 @@ namespace Sample.ExternalIdentities
             this.action = "Continue";
         }
 
-        public ResponseContent(string action, string userMessage, string status="")
+        public ResponseContent(string action, string userMessage)
         {
             this.version = ResponseContent.ApiVersion;
             this.action = action;
             this.userMessage = userMessage;
-            if(status=="400"){
+            if (action != "Continue")
+            {
                 this.status = "400";
             }
         }
