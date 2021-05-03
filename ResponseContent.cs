@@ -25,9 +25,11 @@ namespace Sample.ExternalIdentities
 
         public string version { get; }
         public string action { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string userMessage { get; set; }
-        
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string status { get; set; }
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        public string jobTitle { get; set; }
     }
 }
