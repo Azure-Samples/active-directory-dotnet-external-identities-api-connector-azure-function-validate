@@ -1,3 +1,5 @@
+using Newtonsoft.Json;
+
 namespace Sample.ExternalIdentities
 {
     public class ResponseContent
@@ -15,7 +17,7 @@ namespace Sample.ExternalIdentities
             this.version = ResponseContent.ApiVersion;
             this.action = action;
             this.userMessage = userMessage;
-            if (action != "Continue")
+            if (action == "ValidationError")
             {
                 this.status = "400";
             }
@@ -24,6 +26,8 @@ namespace Sample.ExternalIdentities
         public string version { get; }
         public string action { get; set; }
         public string userMessage { get; set; }
+        
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string status { get; set; }
     }
 }
