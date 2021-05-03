@@ -15,7 +15,7 @@ This sample demonstrates how to use API connectors to customize sign-up for Azur
 In particular, the sample demonstrates how to:
 
 1. Limit external user sign-ups to only a particular federated Azure Active Directory tenant. In this example, it's a fictitious `fabrikam.com` and `fabricam.com`.
-1. Validate a user-provided value ('Job Title') against a validation rule.
+1. Validate a user-provided value `Display Name` against a validation rule.
 
 The API is implemented using an Azure Function HTTP trigger in C# .NET Core.
 
@@ -35,7 +35,7 @@ The API is implemented using an Azure Function HTTP trigger in C# .NET Core.
 
 API connectors provide you with a way to modify and extend sign-up flows by leveraging web APIs. API connectors are available in both [guest user self-service sign up](https://docs.microsoft.com/azure/active-directory/external-identities/api-connectors-overview) and [Azure AD B2C sign-up user flows](https://docs.microsoft.com/azure/active-directory-b2c/add-api-connector).
 
-This examples uses an API connector to limit sign-ups to only specific email domains, fabrikam.com and fabricam.com. This is easily modifiable in `SignUpValidation.cs` and can be extended limit sign ups to any particular email domain or set of email domains. Further, the API connector in this sample is used to perform input validation on 'Job Title' by ensuring a user provides a value of at least 4 characters.
+This examples uses an API connector to limit sign-ups to only specific email domains, fabrikam.com and fabricam.com. This is easily modifiable in `SignUpValidation.cs` and can be extended limit sign ups to any particular email domain or set of email domains. Further, the API connector in this sample is used to perform input validation on `Display Name` by ensuring a user provides a value of at least 4 characters.
 
 This sample uses an Azure Function as the web API endpoint but you can alternatively edit the `.cs` files in your preferred IDE and deploy that code in any web service. If so, environment variables used for authentication may work differently.
 
@@ -114,7 +114,7 @@ In the **API connector** settings for your user flow, you can select the API con
 ![API connector selected](images/api-connector-selected.png)
 
 - **After signing in with an identity provider** - if enabled for this step, the API connector will only allow users with an email ending in `@fabrikam.com`. Note that for Azure AD B2C, this does not apply to local accounts.
-- **Before creating the user** - if enabled for this step, the API connector will only allow users with an email ending in `@fabrikam.com` _and_ check whether 'Job Title' is of at least length 4. Note that **Job Title** has to be selected in **User attributes** for the user flow.
+- **Before creating the user** - if enabled for this step, the API connector will only allow users with an email ending in `@fabrikam.com` _and_ check whether the `Display Name` attribute is of at least length 5. Note, the `Display Name` has to be selected in **User attributes** for the user flow.
 
 ## Customizing the Azure Function
 

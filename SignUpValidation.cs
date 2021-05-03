@@ -60,14 +60,17 @@ namespace Sample.ExternalIdentities
                 return (ActionResult)new OkObjectResult(new ResponseContent("ShowBlockPage", $"You must have an account from '{string.Join(", ", allowedDomain)}' to register as an external user for Contoso."));
             }
 
-            // If jobTitle claim doesn't exist, or it is too short, show validation error message. So, user can fix the input data.
-            if (data.jobTitle == null || data.jobTitle.ToString().Length < 5)
+            // If displayName claim doesn't exist, or it is too short, show validation error message. So, user can fix the input data.
+            if (data.displayName == null || data.displayName.ToString().Length < 5)
             {
-                return (ActionResult)new BadRequestObjectResult(new ResponseContent("ValidationError", "Please provide a Job Title with at least five characters ."));
+                return (ActionResult)new BadRequestObjectResult(new ResponseContent("ValidationError", "Please provide a Display Name with at least five characters."));
             }
 
             // Input validation passed successfully, return `Allow` response.
-            return (ActionResult)new OkObjectResult(new ResponseContent());
+            // TO DO: Configure the claims you want to return 
+            return (ActionResult)new OkObjectResult(new ResponseContent() { 
+                jobTitle = "This value return by the API Connector" 
+            });
         }
 
         private static bool Authorize(HttpRequest req, ILogger log)
