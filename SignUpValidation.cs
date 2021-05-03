@@ -48,7 +48,7 @@ namespace Sample.ExternalIdentities
             // If email claim not found, show block page. Email is required and sent by default.
             if (data.email == null || data.email.ToString() == "" || data.email.ToString().Contains("@") == false)
             {
-                return (ActionResult)new BadRequestObjectResult(new ResponseContent("ShowBlockPage", "Email name is mandatory."));
+                return (ActionResult)new OkObjectResult(new ResponseContent("ShowBlockPage", "Email name is mandatory."));
             }
 
             // Get domain of email address
@@ -57,7 +57,7 @@ namespace Sample.ExternalIdentities
             // Check the domain in the allowed list
             if (!allowedDomain.Contains(domain.ToLower()))
             {
-                return (ActionResult)new BadRequestObjectResult(new ResponseContent("ShowBlockPage", $"You must have an account from '{string.Join(", ", allowedDomain)}' to register as an external user for Contoso."));
+                return (ActionResult)new OkObjectResult(new ResponseContent("ShowBlockPage", $"You must have an account from '{string.Join(", ", allowedDomain)}' to register as an external user for Contoso."));
             }
 
             // If jobTitle claim doesn't exist, or it is too short, show validation error message. So, user can fix the input data.
