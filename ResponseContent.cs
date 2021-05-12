@@ -4,7 +4,7 @@ namespace Sample.ExternalIdentities
 {
     public class ResponseContent
     {
-        public const string ApiVersion = "0.0.1";
+        public const string ApiVersion = "1.0.0";
 
         public ResponseContent()
         {
@@ -25,11 +25,20 @@ namespace Sample.ExternalIdentities
 
         public string version { get; }
         public string action { get; set; }
+
+
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string userMessage { get; set; }
+
+
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string status { get; set; }
+
+
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string jobTitle { get; set; }
+
+        //[JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
+        //public string extension_CustomClaim { get; set; }
     }
 }
