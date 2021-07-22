@@ -5,7 +5,7 @@ languages:
   - .Net core
 products:
   - azure-active-directory
-description: "A sample to demonstrate how to validating a sign-up using a C# Azure Function and API connectors"
+description: "A sample to demonstrate how to validating a sign-up user flow using a C# Azure Function and API connectors"
 urlFragment: "active-directory-dotnet-external-identities-api-connector-azure-function-validate"
 ---
 
@@ -33,7 +33,7 @@ The API is implemented using an Azure Function HTTP trigger in C# .NET Core.
 
 ## Key concepts
 
-API connectors provide you with a way to modify and extend sign-up flows by leveraging web APIs. API connectors are available in both [guest user self-service sign up](https://docs.microsoft.com/azure/active-directory/external-identities/api-connectors-overview) and [Azure AD B2C sign-up user flows](https://docs.microsoft.com/azure/active-directory-b2c/add-api-connector).
+API connectors provide you with a way to modify and extend sign-up flows by leveraging web APIs. API connectors are available in both [guest user self-service sign up](https://docs.microsoft.com/azure/active-directory/external-identities/api-connectors-overview) and [Azure AD B2C sign-up user flows](https://docs.microsoft.com/azure/active-directory-b2c/api-connectors-overview?pivots=b2c-user-flow).
 
 This examples uses an API connector to limit sign-ups to only specific email domains, fabrikam.com and fabricam.com. This is easily modifiable in `SignUpValidation.cs` and can be extended limit sign ups to any particular email domain or set of email domains. Further, the API connector in this sample is used to perform input validation on `Display Name` by ensuring a user provides a value of at least 4 characters.
 
