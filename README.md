@@ -113,7 +113,7 @@ Your API connector configuration should look like the following:
 In the **API connector** settings for your user flow, you can select the API connector to be invoked at either step:
 
 <img src="media/api-connector-selected.png" alt="API connector select"
-    title="API connector selection" width="800" />
+    title="API connector selection" width="450" />
 
 - **After signing in with an identity provider** - if enabled for this step, the API connector will only allow users with an email ending in `@fabrikam.com`. Note that for Azure AD B2C, this does not apply to local accounts.
 - **Before creating the user** - if enabled for this step, the API connector will only allow users with an email ending in `@fabrikam.com` _and_ check whether the `Display Name` attribute is of at least length 5. Note, the `Display Name` has to be selected in **User attributes** for the user flow.
