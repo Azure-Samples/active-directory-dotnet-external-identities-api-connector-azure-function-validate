@@ -1,31 +1,33 @@
-using System;
-using System.IO;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.WebJobs;
-using Microsoft.Azure.WebJobs.Extensions.Http;
-using Microsoft.AspNetCore.Http;
+using Microsoft.Azure.Functions.Worker;
+using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using System.Linq;
 
 namespace Sample.ExternalIdentities
 {
-    public static class SignUpValidation
+    public class SignUpValidation
     {
-        [FunctionName("SignUpValidation")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequest req,
-            ILogger log)
+        [Function("SignUpValidation")]
+        public static async Task<HttpResponseData> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "post", Route = null)] HttpRequestData req, FunctionContext executionContext)
         {
+            var _logger = executionContext.GetLogger("HttpFunction");
+
             // Allowed domains
             string[] allowedDomain = { "fabrikam.com", "fabricam.com" };
+            var response = req.CreateResponse(System.Net.HttpStatusCode.OK);
 
             // Check HTTP basic authorization
-            if (!Authorize(req, log))
+            if (!Authorize(req, _logger))
             {
-                log.LogWarning("HTTP basic authentication validation failed.");
-                return (ActionResult)new UnauthorizedResult();
+                _logger.LogWarning("HTTP basic authentication validation failed.");
+
+                response = req.CreateResponse(System.Net.HttpStatusCode.Unauthorized);
+
+                response.Headers.Add("Content-Type", "application/json");
+
+                return response;
             }
 
             // Get the request body
@@ -35,20 +37,24 @@ namespace Sample.ExternalIdentities
             // If input data is null, show block page
             if (data == null)
             {
-                return (ActionResult)new OkObjectResult(new ResponseContent("ShowBlockPage", "There was a problem with your request."));
+                await response.WriteAsJsonAsync(new ResponseContent("ShowBlockPage", "There was a problem with your request."));
+
+                return response;
             }
 
             // Print out the request body
-            log.LogInformation("Request body: " + requestBody);
+            _logger.LogInformation("Request body: " + requestBody);
 
             // Get the current user language 
             string language = (data.ui_locales == null || data.ui_locales.ToString() == "") ? "default" : data.ui_locales.ToString();
-            log.LogInformation($"Current language: {language}");
+            _logger.LogInformation($"Current language: {language}");
 
             // If email claim not found, show block page. Email is required and sent by default.
             if (data.email == null || data.email.ToString() == "" || data.email.ToString().Contains("@") == false)
             {
-                return (ActionResult)new OkObjectResult(new ResponseContent("ShowBlockPage", "Email name is mandatory."));
+                await response.WriteAsJsonAsync(new ResponseContent("ShowBlockPage", "Email name is mandatory."));
+
+                return response;
             }
 
             // Get domain of email address
@@ -57,25 +63,38 @@ namespace Sample.ExternalIdentities
             // Check the domain in the allowed list
             if (!allowedDomain.Contains(domain.ToLower()))
             {
-                return (ActionResult)new OkObjectResult(new ResponseContent("ShowBlockPage", $"You must have an account from '{string.Join(", ", allowedDomain)}' to register as an external user for Contoso."));
+                _logger.LogInformation("BlockPage Response");
+
+                await response.WriteAsJsonAsync(new ResponseContent("ShowBlockPage", $"You must have an account from '{string.Join(", ", allowedDomain)}' to register as an external user for Contoso."));
+
+                return response;
             }
 
             // If displayName claim doesn't exist, or it is too short, show validation error message. So, user can fix the input data.
             if (data.displayName == null || data.displayName.ToString().Length < 5)
             {
-                return (ActionResult)new BadRequestObjectResult(new ResponseContent("ValidationError", "Please provide a Display Name with at least five characters."));
+                _logger.LogInformation("BlockPage Response");
+                response = req.CreateResponse(System.Net.HttpStatusCode.BadRequest);
+
+                await response.WriteAsJsonAsync(new ResponseContent("ValidationError", "Please provide a Display Name with at least five characters."));
+
+                return response;
             }
 
             // Input validation passed successfully, return `Allow` response.
             // TO DO: Configure the claims you want to return
-            return (ActionResult)new OkObjectResult(new ResponseContent() { 
+
+            await response.WriteAsJsonAsync(new ResponseContent()
+            {
                 jobTitle = "This value return by the API Connector"//,
                 // You can also return custom claims using extension properties.
                 //extension_CustomClaim = "my custom claim response"
             });
+
+            return response;
         }
 
-        private static bool Authorize(HttpRequest req, ILogger log)
+        private static bool Authorize(HttpRequestData req, ILogger log)
         {
             // Get the environment's credentials 
             string username = System.Environment.GetEnvironmentVariable("BASIC_AUTH_USERNAME", EnvironmentVariableTarget.Process);
@@ -89,15 +108,15 @@ namespace Sample.ExternalIdentities
             }
 
             // Check if the HTTP Authorization header exist
-            if (!req.Headers.ContainsKey("Authorization"))
+            if (!req.Headers.Contains("Authorization"))
             {
                 log.LogWarning("Missing HTTP basic authentication header.");
                 return false;
             }
 
             // Read the authorization header
-            var auth = req.Headers["Authorization"].ToString();
-
+            var auth = req.Headers.GetValues("Authorization").First();
+            log.LogInformation(auth);
             // Ensure the type of the authorization header id `Basic`
             if (!auth.StartsWith("Basic "))
             {
